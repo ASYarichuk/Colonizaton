@@ -7,11 +7,7 @@ public class CoinCreator : MonoBehaviour
 
     [SerializeField] private int _amountCoins = 10;
 
-    [SerializeField] private PositionChecker _positionChecker;
-
     [SerializeField] private MapSize _mapSize;
-
-    private int _positionCoinY = 2;
 
     private float _waitUntilCreate = 3f;
 
@@ -28,29 +24,11 @@ public class CoinCreator : MonoBehaviour
 
         while (_amountCoins > 0)
         {
-            ChangePositionCreatedCoin();
-            bool checkCurrentPositionCreatedCoin = _positionChecker.CheckPosition();
-
-            while (checkCurrentPositionCreatedCoin == false)
-            {
-                ChangePositionCreatedCoin();
-                checkCurrentPositionCreatedCoin = _positionChecker.CheckPosition();
-            }
-
             Instantiate(_coinPrefab, positionCreatedCoin, Quaternion.Euler(0, 0, 90));
 
             _amountCoins--;
 
             yield return waitUntilCreateCoins;
         }
-    }
-
-    private void ChangePositionCreatedCoin()
-    {
-        positionCreatedCoin = new(Random.Range(_mapSize.GiveMapSizeMinX(), _mapSize.GiveMapSizeMaxX()),
-                                _positionCoinY,
-                                Random.Range(_mapSize.GiveMapSizeMinZ(), _mapSize.GiveMapSizeMaxZ()));
-
-        _positionChecker.ChangePosition(positionCreatedCoin);
     }
 }

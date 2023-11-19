@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BaseCreator : MonoBehaviour
@@ -24,6 +25,13 @@ public class BaseCreator : MonoBehaviour
 
     private Base _newBase;
 
+    public event Action<bool> StatusFlag;
+
+    private void Awake()
+    {
+        StatusFlag?.Invoke(false);
+    }
+
     private void Update()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -45,6 +53,7 @@ public class BaseCreator : MonoBehaviour
                 {
                     _flag = Instantiate(_flagNewBase, _position + Vector3.up, Quaternion.identity);
                     _statusFlag = true;
+                    StatusFlag?.Invoke(true);
                 }
             }
         }
@@ -101,6 +110,8 @@ public class BaseCreator : MonoBehaviour
             Vector3 positionBuildingBase = new Vector3(_position.x + _distanceFromConstructionPoint, _position.y, _position.z + _distanceFromConstructionPoint);
 
             _newBase = Instantiate(_basePrefab, positionBuildingBase, Quaternion.identity);
+
+            StatusFlag?.Invoke(false);
         }
     }
 

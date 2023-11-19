@@ -14,27 +14,35 @@ public class UnitCreator : MonoBehaviour
 
     private int _amountMoneyForCreateUnit = 3;
 
+    private bool _statusFlag;
+
     private void Update()
     {
-        if (_baseCreator.GiveStatusFlag() == false)
+        _baseCreator.StatusFlag += ChangedStatusFlag;
+        CreateUnit(_statusFlag);
+    }
+
+    private void CreateUnit(bool created)
+    {
+        if(created == false)
         {
-            CreateUnit();
+            if (_coinsBase.ShowAvailableMoney() >= _amountMoneyForCreateUnit)
+            {
+                _coinsBase.DeleteAvailableMoney(_amountMoneyForCreateUnit);
+
+                Vector3 startPositionCreateUnit = new(_unitsBase.transform.position.x, 0, _unitsBase.transform.position.z);
+
+                Unit newUnit = Instantiate(_unitPrefab, startPositionCreateUnit, Quaternion.identity, transform);
+
+                newUnit.TakeTarget(_startPosition);
+
+                _unitsBase.AddNewUnit(newUnit);
+            }
         }
     }
 
-    private void CreateUnit()
+    private void ChangedStatusFlag(bool status)
     {
-        if(_coinsBase.ShowAvailableMoney() >= _amountMoneyForCreateUnit)
-        {
-            _coinsBase.DeleteAvailableMoney(_amountMoneyForCreateUnit);
-
-            Vector3 startPositionCreateUnit = new (_unitsBase.transform.position.x, 0, _unitsBase.transform.position.z);
-
-            Unit newUnit = Instantiate(_unitPrefab, startPositionCreateUnit, Quaternion.identity, transform);
-
-            newUnit.TakeTarget(_startPosition);
-
-            _unitsBase.AddNewUnit(newUnit);
-        }
+        _statusFlag = status;
     }
 }
